@@ -1,7 +1,7 @@
 # lib/department.py
 
 from __init__ import CURSOR, CONN
-
+from employee import Employee  # Import Employee here for the employees() method
 
 class Department:
 
@@ -139,3 +139,16 @@ class Department:
 
         row = CURSOR.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(row) if row else None
+
+    def employees(self):
+        """Return list of employees associated with current department"""
+        sql = """
+            SELECT * FROM employees
+            WHERE department_id = ?
+        """
+        CURSOR.execute(sql, (self.id,))
+
+        rows = CURSOR.fetchall()
+        return [
+            Employee.instance_from_db(row) for row in rows
+        ]
